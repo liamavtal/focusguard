@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusGuard Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-secondary: #18181b;
+      --bg-tertiary: #27272a;
+      --bg-elevated: #3f3f46;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-muted: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-muted: rgba(239, 68, 68, 0.15);
+      --warning: #f59e0b;
+      --pro: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #3f3f46;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, sans-serif;
+      padding: 40px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .header-text h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-text p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon {
+      font-size: 20px;
+    }
+
+    .card-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .pro-badge {
+      background: var(--pro);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Toggle Row */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-info h4 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .toggle-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .toggle {
+      width: 48px;
+      height: 26px;
+      background: var(--bg-elevated);
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: all 0.2s ease;
+    }
+
+    .toggle.active {
+      background: var(--accent);
+    }
+
+    .toggle.active::after {
+      left: 25px;
+      background: white;
+    }
+
+    .toggle.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Days Selector */
+    .days-grid {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .day-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .day-btn:hover {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+    }
+
+    .day-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .btn-danger {
+      background: var(--danger-muted);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-gradient {
+      background: var(--pro);
+      color: white;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Status */
+    .status {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .status.visible {
+      display: block;
+    }
+
+    .status.success {
+      background: var(--accent-muted);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .status.error {
+      background: var(--danger-muted);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    /* Account Card */
+    .account-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .account-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .account-details h4 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .account-details p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Subscription Card */
+    .subscription-active {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--accent-muted);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+    }
+
+    .subscription-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .subscription-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .subscription-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    /* Locked Overlay */
+    .locked-card {
+      position: relative;
+    }
+
+    .locked-card.locked::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 9, 11, 0.85);
+      border-radius: var(--radius);
+      z-index: 10;
+    }
+
+    .locked-card.locked::after {
+      content: '🔒 Pro Feature';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--pro);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 11;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Not Logged In */
+    .auth-required {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .auth-required .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .auth-required h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .auth-required p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Loading */
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-icon">🛡️</div>
+      <div class="header-text">
+        <h1>FocusGuard Settings</h1>
+        <p>Manage your account and preferences</p>
+      </div>
+    </header>
+
+    <!-- Loading -->
+    <div id="loadingState">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="mainContent" style="display: none;">
+      
+      <!-- Account Card -->
+      <div class="card" id="accountCard">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">👤</span>
+            Account
+          </div>
+        </div>
+        
+        <!-- Logged In State -->
+        <div id="loggedInState" style="display: none;">
+          <div class="account-info">
+            <div class="account-avatar" id="userAvatar">U</div>
+            <div class="account-details">
+              <h4 id="userName">User</h4>
+              <p id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="473234223507223f262a372b226924282a">[email&#160;protected]</a></p>
+            </div>
+          </div>
+          
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="editProfileBtn">Edit Profile</button>
+            <button class="btn btn-danger" id="signOutBtn">Sign Out</button>
+          </div>
+        </div>
+        
+        <!-- Logged Out State -->
+        <div id="loggedOutState">
+          <div class="auth-required">
+            <div class="icon">🔐</div>
+            <h3>Sign in to sync your data</h3>
+            <p>Create an account to sync settings across devices and unlock Pro features.</p>
+            <button class="btn btn-primary" id="signInBtn">Sign In / Create Account</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Card -->
+      <div class="card" id="subscriptionCard">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⭐</span>
+            Subscription
+          </div>
+        </div>
+        
+        <!-- Pro Active -->
+        <div id="proActiveState" style="display: none;">
+          <div class="subscription-active">
+            <div class="subscription-icon">✓</div>
+            <div class="subscription-info">
+              <h4>Pro Plan Active</h4>
+              <p id="subscriptionDetails">Renews on Jan 1, 2025</p>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="manageSubBtn">Manage Subscription</button>
+          </div>
+        </div>
+        
+        <!-- Free State -->
+        <div id="freeState">
+          <p class="card-description">
+            Upgrade to Pro for unlimited sites, scheduled focus times, password protection, and cloud sync.
+          </p>
+          <div class="btn-group">
+            <button class="btn btn-gradient" id="upgradeMonthlyBtn">
+              $4.99/month
+            </button>
+            <button class="btn btn-gradient" id="upgradeYearlyBtn" style="opacity: 0.9;">
+              $39.99/year (Save 33%)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Card (Pro) -->
+      <div class="card locked-card" id="scheduleCard">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⏰</span>
+            Focus Schedule
+          </div>
+          <span class="pro-badge">PRO</span>
+        </div>
+        
+        <p class="card-description">
+          Automatically enable Focus Mode during specific times.
+        </p>
+        
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Enable Schedule</h4>
+            <p>Auto-enable Focus Mode on schedule</p>
+          </div>
+          <div class="toggle" id="scheduleToggle"></div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="time" class="form-input" id="startTime" value="09:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="time" class="form-input" id="endTime" value="17:00">
+          </div>
+        </div>
+        
+        <label class="form-label">Active Days</label>
+        <div class="days-grid" id="daysGrid">
+          <button class="day-btn" data-day="0">Su</button>
+          <button class="day-btn active" data-day="1">Mo</button>
+          <button class="day-btn active" data-day="2">Tu</button>
+          <button class="day-btn active" data-day="3">We</button>
+          <button class="day-btn active" data-day="4">Th</button>
+          <button class="day-btn active" data-day="5">Fr</button>
+          <button class="day-btn" data-day="6">Sa</button>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary" id="saveScheduleBtn">Save Schedule</button>
+        </div>
+        <div class="status" id="scheduleStatus"></div>
+      </div>
+
+      <!-- Password Protection Card (Pro) -->
+      <div class="card locked-card" id="passwordCard">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🔐</span>
+            Password Protection
+          </div>
+          <span class="pro-badge">PRO</span>
+        </div>
+        
+        <p class="card-description">
+          Require a password to disable Focus Mode. Prevents cheating during work sessions.
+        </p>
+        
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Enable Password</h4>
+            <p>Require password to disable focus</p>
+          </div>
+          <div class="toggle" id="passwordToggle"></div>
+        </div>
+        
+        <div id="passwordFields" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Set Password</label>
+            <input type="password" class="form-input" id="passwordInput" placeholder="Enter new password">
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary" id="savePasswordBtn">Save Password</button>
+        </div>
+        <div class="status" id="passwordStatus"></div>
+      </div>
+
+      <!-- Settings Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⚙️</span>
+            Preferences
+          </div>
+        </div>
+        
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Show Motivational Quotes</h4>
+            <p>Display quotes on blocked page</p>
+          </div>
+          <div class="toggle active" id="motivationToggle"></div>
+        </div>
+        
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Cloud Sync</h4>
+            <p>Sync settings across devices</p>
+          </div>
+          <div class="toggle active" id="syncToggle"></div>
+        </div>
+        
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Notifications</h4>
+            <p>Show notification when site blocked</p>
+          </div>
+          <div class="toggle active" id="notificationsToggle"></div>
+        </div>
+      </div>
+
+      <!-- Statistics Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📊</span>
+            Statistics
+          </div>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalBlocks">0</div>
+            <div class="stat-label">Total Blocks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="todayBlocks">0</div>
+            <div class="stat-label">Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="streakDays">0</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="focusMinutes">0</div>
+            <div class="stat-label">Focus Minutes</div>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="exportDataBtn">Export Data</button>
+          <button class="btn btn-danger" id="resetStatsBtn">Reset Stats</button>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⚠️</span>
+            Danger Zone
+          </div>
+        </div>
+        
+        <p class="card-description">
+          These actions are irreversible. Please proceed with caution.
+        </p>
+        
+        <div class="btn-group">
+          <button class="btn btn-danger" id="resetAllBtn">Reset All Settings</button>
+          <button class="btn btn-danger" id="deleteAccountBtn" style="display: none;">Delete Account</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>FocusGuard v1.0.0</p>
+      <p><a href="#" id="supportLink">Support</a> • <a href="#" id="privacyLink">Privacy</a> • <a href="#" id="termsLink">Terms</a
