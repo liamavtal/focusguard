@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400">
+  <title>FocusGuard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-secondary: #18181b;
+      --bg-tertiary: #27272a;
+      --bg-elevated: #3f3f46;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-muted: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-muted: rgba(239, 68, 68, 0.15);
+      --warning: #f59e0b;
+      --pro: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #3f3f46;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 380px;
+      max-height: 580px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body::-webkit-scrollbar { width: 6px; }
+    body::-webkit-scrollbar-track { background: transparent; }
+    body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* HEADER */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    
+    .header {
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .brand-text {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .badge-pro {
+      background: var(--pro);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Focus Toggle Card */
+    .focus-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .focus-card:hover {
+      border-color: var(--text-muted);
+    }
+
+    .focus-card.active {
+      background: var(--accent-muted);
+      border-color: var(--accent);
+    }
+
+    .focus-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .focus-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-elevated);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .focus-card.active .focus-icon {
+      background: var(--accent);
+    }
+
+    .focus-label {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .focus-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .focus-card.active .focus-status {
+      color: var(--accent);
+    }
+
+    .toggle {
+      width: 52px;
+      height: 28px;
+      background: var(--bg-elevated);
+      border-radius: 14px;
+      position: relative;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .focus-card.active .toggle {
+      background: var(--accent);
+    }
+
+    .focus-card.active .toggle::after {
+      left: 27px;
+      background: white;
+    }
+
+    /* Schedule Badge */
+    .schedule-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--accent-muted);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .schedule-indicator.visible {
+      display: flex;
+    }
+
+    .schedule-indicator svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* STATS */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 16px 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* SECTIONS */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .section {
+      padding: 0 20px 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .section-action {
+      font-size: 12px;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .section-action:hover {
+      text-decoration: underline;
+    }
+
+    /* Presets */
+    .presets-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .preset-chip {
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-chip:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .preset-chip.active {
+      background: var(--accent-muted);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .preset-chip.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preset-chip .lock-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Add Site Form */
+    .add-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .add-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .add-input:focus {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .add-btn {
+      padding: 10px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .add-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .add-btn:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* Sites List */
+    .sites-list {
+      max-height: 150px;
+      overflow-y: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .sites-list::-webkit-scrollbar { width: 4px; }
+    .sites-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .site-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-item:last-child {
+      border-bottom: none;
+    }
+
+    .site-name {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    .site-remove {
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .site-remove:hover {
+      background: var(--danger-muted);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .limit-badge {
+      font-size: 11px;
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* UPGRADE CARD */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .upgrade-card {
+      margin: 0 20px 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(236, 72, 153, 0.1));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius);
+      display: none;
+    }
+
+    .upgrade-card.visible {
+      display: block;
+    }
+
+    .upgrade-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+      background: var(--pro);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .upgrade-features {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .upgrade-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--pro);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upgrade-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* AUTH PROMPT */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .auth-prompt {
+      margin: 0 20px 16px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      display: none;
+    }
+
+    .auth-prompt.visible {
+      display: block;
+    }
+
+    .auth-prompt p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-btn:hover {
+      background: var(--bg-elevated);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* USER MENU */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .user-menu {
+      position: relative;
+    }
+
+    .user-btn {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 220px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      display: none;
+      z-index: 1000;
+    }
+
+    .user-dropdown.visible {
+      display: block;
+    }
+
+    .user-dropdown-header {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 500;
+      word-break: break-all;
+    }
+
+    .user-plan {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .user-dropdown-item {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.1s ease;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .user-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .user-dropdown-item.danger {
+      color: var(--danger);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* PASSWORD MODAL */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 320px;
+      max-width: 90%;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .modal-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-error {
+      color: var(--danger);
+      font-size: 12px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    .modal-error.visible {
+      display: block;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-btn-secondary {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .modal-btn-primary {
+      background: var(--accent);
+      border: none;
+      color: white;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* TOAST */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-size: 13px;
+      z-index: 3000;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════ */
+    /* LOADING */
+    /* ══════════════════════════════════════════════════════════════════════════ */
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5000;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-row">
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <span class="brand-text">FocusGuard</span>
+        <span class="badge-pro" id="proBadge" style="display: none;">PRO</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="settingsBtn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </button>
+        
+        <!-- User Menu (shown when logged in) -->
+        <div class="user-menu" id="userMenu" style="display: none;">
+          <button class="user-btn" id="userBtn">U</button>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-dropdown-header">
+              <div class="user-email" id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6b1e180e192b0e130a061b070e45080406">[email&#160;protected]</a></div>
+              <div class="user-plan" id="userPlan">Free Plan</div>
+            </div>
+            <div class="user-dropdown-item" id="manageSubscription">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2"/>
+                <line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Manage Subscription
+            </div>
+            <div class="user-dropdown-item" id="syncNow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6M1 20v-6h6"/>
+                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+              </svg>
+              Sync Now
+            </div>
+            <div class="user-dropdown-item danger" id="signOutBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign Out
+            </div>
+          </div>
+        </div>
+
+        <!-- Auth Button (shown when logged out) -->
+        <button class="icon-btn" id="authBtn" title="Sign In">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Focus Toggle Card -->
+    <div class="focus-card" id="focusCard">
+      <div class="focus-info">
+        <div class="focus-icon">🎯</div>
+        <div>
+          <div class="focus-label">Focus Mode</div>
+          <div class="focus-status" id="focusStatus">Inactive</div>
+        </div>
+      </div>
+      <div class="toggle" id="focusToggle"></div>
+    </div>
+
+    <!-- Schedule Indicator -->
+    <div class="schedule-indicator" id="scheduleIndicator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span id="scheduleText">Scheduled: 9:00 AM - 5:00 PM</span>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="blocksToday">0</div>
+      <div class="stat-label">Today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="blocksTotal">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="streakDays">0</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+  </div>
+
+  <!-- Auth Prompt (shown when logged out) -->
+  <div class="auth-prompt" id="authPrompt">
+    <p>Sign in to sync your settings across devices and unlock Pro features.</p>
+    <button class="auth-btn" id="authPromptBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      Sign In / Create Account
+    </button>
+  </div>
+
+  <!-- Quick Presets -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Quick Block</span>
+    </div>
+    <div class="presets-grid" id="presetsGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Add Custom Site -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Block Custom Site</span>
+      <span class="limit-badge" id="limitBadge" style="display: none;">5/5</span>
+    </div>
+    <div class="add-form">
+      <input type="text" class="add-input" id="siteInput" placeholder="example.com" autocomplete="off">
+      <button class="add-btn" id="addSiteBtn">Add</button>
+    </div>
+  </div>
+
+  <!-- Blocked Sites List -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Blocked Sites (<span id="siteCount">0</span>)</span>
+      <span class="section-action" id="clearAllBtn">Clear All</span>
+    </div>
+    <div class="sites-list" id="sitesList">
+      <div class="empty-state">No sites blocked yet</div>
+    </div>
+  </div>
+
+  <!-- Upgrade Card (shown for free users) -->
+  <div class="upgrade-card" id="upgradeCard">
+    <div class="upgrade-title">🚀 Unlock FocusGuard Pro</div>
+    <div class="upgrade-features">
+      Unlimited sites • Scheduled focus • Password protection • Cloud sync • Analytics
+    </div>
+    <button class="upgrade-btn" id="upgradeBtn">Upgrade for $4.99/month</button>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal">
+      <div class="modal-title">🔐 Password Required</div>
+      <div class="modal-text">Enter your password to disable Focus Mode.</div>
+      <div class="modal-error" id="passwordError">Incorrect password</div>
+      <input type="password" class="modal-input" id="passwordInput" placeholder="Enter password">
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-secondary" id="passwordCancel">Cancel</button>
+        <button class="modal-btn modal-btn-primary" id="passwordConfirm">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div c
