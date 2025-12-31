@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 20px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .focus-toggle {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .focus-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #28a745;
+    }
+
+    .status-indicator.inactive {
+      background: #dc3545;
+    }
+
+    .status-text {
+      font-weight: 600;
+      color: #24292e;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      background: #ccc;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active {
+      background: #28a745;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(22px);
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #24292e;
+      margin-bottom: 12px;
+    }
+
+    .presets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .preset-btn {
+      padding: 10px;
+      border: 2px solid #e1e4e8;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #24292e;
+    }
+
+    .preset-btn:hover {
+      border-color: #ff6b6b;
+      background: #fff5f5;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e1e4e8;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #ff6b6b;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #ee5a6f;
+    }
+
+    .blocked-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .blocked-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .blocked-url {
+      color: #586069;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #dc3545;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 5px;
+    }
+
+    .remove-btn:hover {
+      color: #c82333;
+    }
+
+    .message {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .message-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: #586069;
+      font-size: 13px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ff6b6b;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #586069;
+      margin-top: 4px;
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background: #1a1d23;
+    }
+
+    body.dark-mode .section,
+    body.dark-mode .focus-toggle,
+    body.dark-mode .stat-card {
+      background: #252930;
+    }
+
+    body.dark-mode .form-input,
+    body.dark-mode .preset-btn,
+    body.dark-mode .blocked-item {
+      background: #1a1d23;
+      border-color: #3a3f4b;
+      color: #c9d1d9;
+    }
+
+    body.dark-mode .form-input:focus {
+      border-color: #ff6b6b;
+      background: #252930;
+    }
+
+    body.dark-mode .section-title,
+    body.dark-mode .status-text {
+      color: #c9d1d9;
+    }
+
+    body.dark-mode .blocked-url,
+    body.dark-mode .stat-label,
+    body.dark-mode .empty-state {
+      color: #8b949e;
+    }
+
+    body.dark-mode .preset-btn:hover {
+      background: #3a3f4b;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">🌙</button>
+    <h1>🛡️ FocusGuard</h1>
+    <p>Block distractions, stay focused</p>
+  </div>
+
+  <div class="container">
+    <div id="message-container"></div>
+
+    <div class="focus-toggle" id="focus-toggle">
+      <div class="focus-status">
+        <div class="status-indicator" id="status-indicator"></div>
+        <div class="status-text" id="status-text">Focus Mode: OFF</div>
+      </div>
+      <div class="toggle-switch" id="toggle-switch">
+        <div class="toggle-slider"></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="blocked-count">0</div>
+        <div class="stat-label">Sites Blocked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="blocks-today">0</div>
+        <div class="stat-label">Blocks Today</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Quick Block Presets</div>
+      <div class="presets">
+        <button class="preset-btn" data-preset="social">📱 Social Media</button>
+        <button class="preset-btn" data-preset="video">🎬 Video Sites</button>
+        <button class="preset-btn" data-preset="news">📰 News Sites</button>
+        <button class="preset-btn" data-preset="shopping">🛍️ Shopping</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Add Website to Block</div>
+      <div class="form-group">
+        <input 
+          type="text" 
+          class="form-input" 
+          id="website-input" 
+          placeholder="Enter website (e.g., facebook.com)"
+        >
+      </div>
+      <button class="btn btn-primary" id="add-btn">+ Block Website</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Currently Blocked</div>
+      <div class="blocked-list" id="blocked-list">
+        <div class="empty-state">
+          No websites blocked yet
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

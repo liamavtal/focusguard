@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px;
+    }
+
+    .icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .quote {
+      font-style: italic;
+      font-size: 16px;
+      opacity: 0.8;
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 30px;
+      background: white;
+      color: #ff6b6b;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🛡️</div>
+    <h1>Website Blocked</h1>
+    <p>This website is currently blocked to help you stay focused and productive.</p>
+    <a href="#" class="btn" onclick="window.history.back(); return false;">Go Back</a>
+    <div class="quote">
+      "The successful warrior is the average man, with laser-like focus."<br>
+      — Bruce Lee
+    </div>
+  </div>
+</body>
+</html>
