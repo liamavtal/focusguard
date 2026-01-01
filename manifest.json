@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "FocusGuard - Website Blocker",
+  "name": "FocusShield - Website Blocker",
   "version": "1.0.1",
   "description": "Block distracting websites and stay focused. Schedule focus times and boost your productivity.",
   "permissions": [

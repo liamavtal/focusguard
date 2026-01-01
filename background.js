@@ -87,13 +87,22 @@ function getNextMidnight() {
   return tomorrow.getTime();
 }
 
-// Initialize on install
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({
-    enabled: false,
-    blockedSites: [],
-    blocksToday: 0
-  });
+// Initialize on install (only set defaults if not already set)
+chrome.runtime.onInstalled.addListener(async (details) => {
+  // Only initialize on fresh install, not updates
+  if (details.reason === 'install') {
+    await chrome.storage.local.set({
+      enabled: false,
+      blockedSites: [],
+      blocksToday: 0
+    });
+  } else if (details.reason === 'update') {
+    // On update, just ensure blocksToday exists (don't wipe user data!)
+    const { blocksToday } = await chrome.storage.local.get('blocksToday');
+    if (blocksToday === undefined) {
+      await chrome.storage.local.set({ blocksToday: 0 });
+    }
+  }
 });
 
 // Load rules on service worker startup

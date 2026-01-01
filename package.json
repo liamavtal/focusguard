@@ -3,13 +3,18 @@
   "version": "1.0.1",
   "description": "Block distracting websites and stay focused",
   "private": true,
+  "type": "module",
+  "engines": { "node": ">=18.0.0" },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "build:zip": "zip -r focusguard-extension.zip . -x 'node_modules/*' -x '.git/*' -x 'coverage/*' -x '*.test.js'"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build:zip": "zip -r focusguard-extension.zip . -x 'node_modules/*' -x '.git/*' -x 'coverage/*' -x 'tests/*'"
   },
   "devDependencies": {
+    "eslint": "^9.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },

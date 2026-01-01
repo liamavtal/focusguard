@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -9,210 +10,431 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --text: #ededef;
+      --text-2: #a1a1a6;
+      --text-3: #636366;
+      --accent: #6366f1;
+      --accent-dim: rgba(99, 102, 241, 0.12);
+      --success: #22c55e;
+      --success-dim: rgba(34, 197, 94, 0.12);
+      --danger: #ef4444;
+    }
+
     body {
-      width: 400px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f8f9fa;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-      color: white;
-      padding: 20px;
-      text-align: center;
+      width: 380px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       position: relative;
+      overflow: hidden;
     }
 
-    .header h1 {
-      font-size: 20px;
+    /* Subtle grid pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Very subtle ambient glow - NOT garish orbs */
+    .ambient {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-1 {
+      background: #6366f1;
+      top: -150px;
+      right: -100px;
+    }
+    .ambient-2 {
+      background: #3b82f6;
+      bottom: -100px;
+      left: -150px;
+      opacity: 0.08;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header - clean, no competing elements */
+    .header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 8px;
+      letter-spacing: -0.3px;
     }
 
-    .header p {
-      font-size: 13px;
-      opacity: 0.9;
+    .header-actions {
+      display: flex;
+      gap: 8px;
     }
 
-    .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      border-radius: 20px;
-      width: 36px;
-      height: 36px;
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 18px;
-      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
     }
 
-    .theme-toggle:hover {
-      background: rgba(255, 255, 255, 0.3);
+    .icon-btn svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-2);
+    }
+
+    .icon-btn:hover {
+      background: var(--surface);
+      border-color: var(--border-hover);
+    }
+
+    .icon-btn:hover svg {
+      color: var(--text);
     }
 
     .container {
       padding: 16px;
     }
 
-    .focus-toggle {
-      background: white;
+    #message-container {
+      margin-bottom: 12px;
+    }
+
+    /* Focus Mode Card - the hero */
+    .focus-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+
+    .focus-card:hover {
+      border-color: var(--border-hover);
+    }
+
+    .focus-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .focus-status {
+    .focus-info {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .status-indicator {
-      width: 12px;
-      height: 12px;
+    .status-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: #28a745;
+      background: var(--text-3);
+      transition: all 0.2s;
     }
 
-    .status-indicator.inactive {
-      background: #dc3545;
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
     }
 
-    .status-text {
-      font-weight: 600;
-      color: #24292e;
+    .focus-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
     }
 
-    .toggle-switch {
-      position: relative;
-      width: 50px;
-      height: 28px;
-      background: #ccc;
-      border-radius: 14px;
+    /* Linear-style toggle */
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s;
+      position: relative;
+      transition: all 0.2s;
     }
 
-    .toggle-switch.active {
-      background: #28a745;
-    }
-
-    .toggle-slider {
+    .toggle::after {
+      content: '';
       position: absolute;
       top: 3px;
       left: 3px;
-      width: 22px;
-      height: 22px;
-      background: white;
+      width: 16px;
+      height: 16px;
+      background: var(--text-2);
       border-radius: 50%;
-      transition: transform 0.3s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .toggle-switch.active .toggle-slider {
-      transform: translateX(22px);
+    .toggle.active {
+      background: var(--accent);
+      border-color: var(--accent);
     }
 
-    .section {
+    .toggle.active::after {
+      transform: translateX(20px);
       background: white;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #24292e;
-      margin-bottom: 12px;
-    }
-
-    .presets {
+    /* Stats grid */
+    .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .preset-btn {
-      padding: 10px;
-      border: 2px solid #e1e4e8;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: #24292e;
-    }
-
-    .preset-btn:hover {
-      border-color: #ff6b6b;
-      background: #fff5f5;
-    }
-
-    .form-group {
       margin-bottom: 12px;
     }
 
-    .form-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 2px solid #e1e4e8;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: border-color 0.2s;
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      transition: border-color 0.15s;
     }
 
-    .form-input:focus {
+    .stat:hover {
+      border-color: var(--border-hover);
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-header svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-3);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+
+    .section-content {
+      padding: 12px;
+    }
+
+    /* Preset buttons */
+    .presets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .preset-btn {
+      padding: 10px 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-3);
+    }
+
+    .preset-btn:hover {
+      background: var(--accent-dim);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: var(--text);
+    }
+
+    .preset-btn:hover svg {
+      color: var(--accent);
+    }
+
+    /* Input */
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input {
+      flex: 1;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .input::placeholder {
+      color: var(--text-3);
+    }
+
+    .input:focus {
       outline: none;
-      border-color: #ff6b6b;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
     }
 
     .btn {
-      padding: 10px 16px;
+      padding: 10px 14px;
+      background: var(--accent);
       border: none;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-    }
-
-    .btn-primary {
-      background: #ff6b6b;
       color: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      white-space: nowrap;
     }
 
-    .btn-primary:hover {
-      background: #ee5a6f;
+    .btn:hover {
+      filter: brightness(1.1);
     }
 
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Blocked list */
     .blocked-list {
-      max-height: 200px;
+      max-height: 140px;
       overflow-y: auto;
+    }
+
+    .blocked-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .blocked-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .blocked-list::-webkit-scrollbar-thumb {
+      background: var(--border-hover);
+      border-radius: 2px;
     }
 
     .blocked-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
-      border: 1px solid #e1e4e8;
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 6px;
-      margin-bottom: 6px;
-      font-size: 13px;
+      margin-bottom: 4px;
+      transition: border-color 0.15s;
+    }
+
+    .blocked-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .blocked-item:hover {
+      border-color: var(--border-hover);
     }
 
     .blocked-url {
-      color: #586069;
+      color: var(--text-2);
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
       flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -222,174 +444,226 @@
     .remove-btn {
       background: none;
       border: none;
-      color: #dc3545;
+      color: var(--text-3);
       cursor: pointer;
-      font-size: 16px;
-      padding: 0 5px;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .remove-btn svg {
+      width: 14px;
+      height: 14px;
     }
 
     .remove-btn:hover {
-      color: #c82333;
-    }
-
-    .message {
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 12px;
-      animation: slideIn 0.3s ease;
-    }
-
-    .message-success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
     }
 
     .empty-state {
       text-align: center;
-      padding: 30px 20px;
-      color: #586069;
-      font-size: 13px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .stat-number {
-      font-size: 24px;
-      font-weight: 700;
-      color: #ff6b6b;
-    }
-
-    .stat-label {
+      padding: 20px;
+      color: var(--text-3);
       font-size: 12px;
-      color: #586069;
-      margin-top: 4px;
     }
 
-    /* Dark Mode */
-    body.dark-mode {
-      background: #1a1d23;
+    /* Messages */
+    .message {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    body.dark-mode .section,
-    body.dark-mode .focus-toggle,
-    body.dark-mode .stat-card {
-      background: #252930;
+    .message svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
     }
 
-    body.dark-mode .form-input,
-    body.dark-mode .preset-btn,
-    body.dark-mode .blocked-item {
-      background: #1a1d23;
-      border-color: #3a3f4b;
-      color: #c9d1d9;
+    .message-success {
+      background: var(--success-dim);
+      color: var(--success);
     }
 
-    body.dark-mode .form-input:focus {
-      border-color: #ff6b6b;
-      background: #252930;
+    .message-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
     }
 
-    body.dark-mode .section-title,
-    body.dark-mode .status-text {
-      color: #c9d1d9;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    body.dark-mode .blocked-url,
-    body.dark-mode .stat-label,
-    body.dark-mode .empty-state {
-      color: #8b949e;
+    /* Light mode */
+    body.light-mode {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #f4f4f5;
+      --border: rgba(0, 0, 0, 0.06);
+      --border-hover: rgba(0, 0, 0, 0.12);
+      --text: #18181b;
+      --text-2: #52525b;
+      --text-3: #a1a1aa;
     }
 
-    body.dark-mode .preset-btn:hover {
-      background: #3a3f4b;
+    body.light-mode::before {
+      background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     }
+
+    body.light-mode .ambient-1 { opacity: 0.08; }
+    body.light-mode .ambient-2 { opacity: 0.04; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">🌙</button>
-    <h1>🛡️ FocusGuard</h1>
-    <p>Block distractions, stay focused</p>
-  </div>
+  <div class="ambient ambient-1"></div>
+  <div class="ambient ambient-2"></div>
 
-  <div class="container">
-    <div id="message-container"></div>
-
-    <div class="focus-toggle" id="focus-toggle">
-      <div class="focus-status">
-        <div class="status-indicator" id="status-indicator"></div>
-        <div class="status-text" id="status-text">Focus Mode: OFF</div>
+  <div class="content">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="logo-text">FocusShield</span>
       </div>
-      <div class="toggle-switch" id="toggle-switch">
-        <div class="toggle-slider"></div>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-number" id="blocked-count">0</div>
-        <div class="stat-label">Sites Blocked</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="blocks-today">0</div>
-        <div class="stat-label">Blocks Today</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Quick Block Presets</div>
-      <div class="presets">
-        <button class="preset-btn" data-preset="social">📱 Social Media</button>
-        <button class="preset-btn" data-preset="video">🎬 Video Sites</button>
-        <button class="preset-btn" data-preset="news">📰 News Sites</button>
-        <button class="preset-btn" data-preset="shopping">🛍️ Shopping</button>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">Add Website to Block</div>
-      <div class="form-group">
-        <input 
-          type="text" 
-          class="form-input" 
-          id="website-input" 
-          placeholder="Enter website (e.g., facebook.com)"
-        >
-      </div>
-      <button class="btn btn-primary" id="add-btn">+ Block Website</button>
-    </div>
+    <div class="container">
+      <div id="message-container"></div>
 
-    <div class="section">
-      <div class="section-title">Currently Blocked</div>
-      <div class="blocked-list" id="blocked-list">
-        <div class="empty-state">
-          No websites blocked yet
+      <!-- Focus Mode Toggle -->
+      <div class="focus-card">
+        <div class="focus-row">
+          <div class="focus-info">
+            <div class="status-dot" id="status-indicator"></div>
+            <span class="focus-label" id="status-text">Focus Mode</span>
+          </div>
+          <div class="toggle" id="toggle-switch"></div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="blocked-count">0</div>
+          <div class="stat-label">Sites blocked</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="blocks-today">0</div>
+          <div class="stat-label">Blocks today</div>
+        </div>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="section">
+        <div class="section-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          <span class="section-title">Quick Presets</span>
+        </div>
+        <div class="section-content">
+          <div class="presets">
+            <button class="preset-btn" data-preset="social">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 2h4a1 1 0 0 1 1 1v4"/>
+                <path d="M3 17v4a1 1 0 0 0 1 1h4"/>
+                <path d="M21 7v4"/>
+                <path d="M3 7v4"/>
+                <path d="M7 3h4"/>
+                <path d="M7 21h4"/>
+                <rect x="7" y="7" width="10" height="10" rx="1"/>
+              </svg>
+              Social
+            </button>
+            <button class="preset-btn" data-preset="video">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Video
+            </button>
+            <button class="preset-btn" data-preset="news">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+                <path d="M18 14h-8"/>
+                <path d="M15 18h-5"/>
+                <path d="M10 6h8v4h-8V6Z"/>
+              </svg>
+              News
+            </button>
+            <button class="preset-btn" data-preset="shopping">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="21" r="1"/>
+                <circle cx="19" cy="21" r="1"/>
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+              </svg>
+              Shopping
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Website -->
+      <div class="section">
+        <div class="section-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span class="section-title">Add Website</span>
+        </div>
+        <div class="section-content">
+          <div class="input-group">
+            <input type="text" class="input" id="website-input" placeholder="facebook.com">
+            <button class="btn" id="add-btn">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocked Sites -->
+      <div class="section">
+        <div class="section-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+          </svg>
+          <span class="section-title">Blocked Sites</span>
+        </div>
+        <div class="section-content">
+          <div class="blocked-list" id="blocked-list">
+            <div class="empty-state">No sites blocked yet</div>
+          </div>
         </div>
       </div>
     </div>
